@@ -419,6 +419,12 @@ export default function Index() {
           </div>
         </>
       )}
+      <img
+        src={image}
+        alt="form"
+        style={{ display: 'none' }}
+      />
+
     </Wrapper>
   );
 }
