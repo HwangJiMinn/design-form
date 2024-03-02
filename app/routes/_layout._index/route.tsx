@@ -28,6 +28,8 @@ export default function Index() {
     quantities: [{ color: '', quantity: '' }],
   });
 
+  console.log('formData', formData);
+
   const [image, setImage] = useState<any>(null);
 
   const [componentSet, setComponentSet] = useState(false);
@@ -109,6 +111,19 @@ export default function Index() {
   const handleDateChange = (e : any, field : string) => {
     const newDate = formatDate(e.target.value);
     setFormData({ ...formData, [field]: newDate });
+  };
+
+  const convertFileToBase64 = (file : any, callback : any) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      callback(reader.result);
+    };
+
+    reader.onerror = (error) => {
+      console.log('Error: ', error);
+    };
   };
 
   return (
@@ -201,7 +216,17 @@ export default function Index() {
             </Label>
             <input
               type="file"
-              onChange={e => setFormData({ ...formData, materialImage : e.target.files?.[0] || null })}
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+
+                if (file) {
+                  convertFileToBase64(file, (base64Image : any) => {
+                    setFormData({ ...formData, materialImage: base64Image });
+                  });
+                } else {
+                  setFormData({ ...formData, materialImage: '' });
+                }
+              }}
             />
           </InputWrapper>
           {formData.materials.map((material: any, index: number)  => (
@@ -272,7 +297,17 @@ export default function Index() {
             </Label>
             <input
               type="file"
-              onChange={e => setFormData({ ...formData, mainImage: e.target.files?.[0] || null })}
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+
+                if (file) {
+                  convertFileToBase64(file, (base64Image : any) => {
+                    setFormData({ ...formData, mainImage: base64Image });
+                  });
+                } else {
+                  setFormData({ ...formData, mainImage: '' });
+                }
+              }}
             />
           </InputWrapper>
           <InputWrapper>
@@ -434,7 +469,6 @@ export default function Index() {
                 <Capture
                   formData={formData}
                 />
-
               </div>
             )}
 

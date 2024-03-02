@@ -122,7 +122,7 @@ const Capture = (props : Props ) => {
           <div style={{ height : imageHeight, width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '1rem' }}>
             {formData.materialImage && (
               <img
-                src={URL.createObjectURL(formData.materialImage)}
+                src={formData.materialImage}
                 alt=""
                 style={{ height: '100%', width: '100%', objectFit: 'contain' }}
               />
@@ -167,7 +167,7 @@ const Capture = (props : Props ) => {
           <div style={{ height : '50%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {formData.mainImage && (
               <img
-                src={URL.createObjectURL(formData.mainImage)}
+                src={formData.mainImage}
                 alt=""
                 style={{ height: '100%', width: '100%', objectFit: 'contain' }}
               />
