@@ -1,5 +1,6 @@
+import domToImage from 'dom-to-image';
 import download from 'downloadjs';
-import * as htmlToImage from 'html-to-image';
+// import * as htmlToImage from 'html-to-image';
 import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
@@ -42,8 +43,12 @@ export default function Index() {
 
   const captureImage = async () => {
     if (captureRef.current) {
-      const imageData = await htmlToImage.toJpeg(captureRef.current);
-      setImage(imageData);
+      try {
+        const imageData = await domToImage.toPng(captureRef.current);
+        setImage(imageData);
+      } catch (error) {
+        console.error('Capture Image Error:', error);
+      }
     }
   };
 
