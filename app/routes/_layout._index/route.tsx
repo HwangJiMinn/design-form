@@ -386,14 +386,14 @@ export default function Index() {
             </button>
             {image !== null ? (
               <button
-                style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'yellow', fontSize: '20px', fontWeight: 'bold' }}
+                style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
                 onClick={() => downloadImage(image)}
               >
                 이미지 다운로드
               </button>
             ) : (
               <button
-                style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'yellow', fontSize: '20px', fontWeight: 'bold' }}
+                style={{ marginTop: '20px', width: '200px', height: '50px', color: 'black', backgroundColor: 'yellow', fontSize: '20px', fontWeight: 'bold' }}
                 onClick={captureImage}
               >
                 이미지 캡처
