@@ -28,6 +28,8 @@ export default function Index() {
     quantities: [{ color: '', quantity: '' }],
   });
 
+  const [image, setImage] = useState<any>(null);
+
   const [componentSet, setComponentSet] = useState(false);
   const captureRef = useRef<HTMLDivElement>(null);
 
@@ -38,8 +40,12 @@ export default function Index() {
   const captureImage = async () => {
     if (captureRef.current) {
       const imageData = await htmlToImage.toPng(captureRef.current);
-      download(imageData, 'captured-image.png');
+      setImage(imageData);
     }
+  };
+
+  const downloadImage = (imageData : any) => {
+    download(imageData, 'form.png');
   };
 
   const addMaterial = () => {
@@ -378,12 +384,22 @@ export default function Index() {
             >
               돌아가기
             </button>
-            <button
-              style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
-              onClick={captureImage}
-            >
-              이미지 다운로드
-            </button>
+            {image !== null ? (
+              <button
+                style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'yellow', fontSize: '20px', fontWeight: 'bold' }}
+                onClick={() => downloadImage(image)}
+              >
+                이미지 다운로드
+              </button>
+            ) : (
+              <button
+                style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'yellow', fontSize: '20px', fontWeight: 'bold' }}
+                onClick={captureImage}
+              >
+                이미지 캡처
+              </button>
+            )}
+
           </div>
           <div
             style={{
