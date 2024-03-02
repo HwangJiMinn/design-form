@@ -35,6 +35,7 @@ export default function Index() {
 
   const componentSetHandler = () => {
     setComponentSet(!componentSet);
+    setImage(null);
   };
 
   const captureImage = async () => {
@@ -384,21 +385,26 @@ export default function Index() {
             >
               돌아가기
             </button>
-            {/* {image !== null ? (
+            {image !== null ? (
+              // <button
+              //   style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
+              //   onClick={() => downloadImage(image)}
+              // >
+              //   이미지 다운로드
+              // </button>
               <button
                 style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
-                onClick={() => downloadImage(image)}
               >
-                이미지 다운로드
+                우클릭으로 다운
               </button>
-            ) : ( */}
-            <button
-              style={{ marginTop: '20px', width: '200px', height: '50px', color: 'black', backgroundColor: 'yellow', fontSize: '20px', fontWeight: 'bold' }}
-              onClick={captureImage}
-            >
-              이미지 캡처
-            </button>
-            {/* )} */}
+            ) : (
+              <button
+                style={{ marginTop: '20px', width: '200px', height: '50px', color: 'black', backgroundColor: 'yellow', fontSize: '20px', fontWeight: 'bold' }}
+                onClick={captureImage}
+              >
+                이미지 캡처
+              </button>
+            )}
 
           </div>
           <div
@@ -411,7 +417,6 @@ export default function Index() {
               alignItems: 'center',
               padding: '1rem',
             }}
-            ref={captureRef}
           >
             {image !== null ? (
               <img
@@ -419,9 +424,23 @@ export default function Index() {
                 alt="form"
               />
             ) : (
-              <Capture
-                formData={formData}
-              />
+              <div
+                style={{
+                  width: '794px',
+                  height: '1123px',
+                  backgroundColor: 'white',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: '1rem',
+                }}
+                ref={captureRef}
+              >
+                <Capture
+                  formData={formData}
+                />
+
+              </div>
             )}
 
           </div>
