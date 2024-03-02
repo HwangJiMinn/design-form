@@ -17,11 +17,10 @@ import { useChangeLanguage } from 'remix-i18next';
 import { NonFlashOfWrongThemeEls, ThemeProvider, useTheme } from '~/hooks/use-theme';
 import i18next from '~/localization/i18next.server';
 import { getThemeSession } from '~/services/theme.server';
-
-import globalStyles from './styles/global.css';
-import resetStyles from './styles/reset.css';
-import tailwindStyles from './styles/tailwind.css';
-import themeStyles from './styles/theme.css';
+import globalStyles from '~/styles/global.css';
+import resetStyles from '~/styles/reset.css';
+import tailwindStyles from '~/styles/tailwind.css';
+import themeStyles from '~/styles/theme.css';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const locale = await i18next.getLocale(request);
