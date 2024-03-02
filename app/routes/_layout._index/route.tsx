@@ -1,4 +1,4 @@
-// import download from 'downloadjs';
+import download from 'downloadjs';
 import * as htmlToImage from 'html-to-image';
 import { useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -45,9 +45,9 @@ export default function Index() {
     }
   };
 
-  // const downloadImage = (imageData : any) => {
-  //   download(imageData, 'form.png');
-  // };
+  const downloadImage = (imageData : any) => {
+    download(imageData, 'form.png');
+  };
 
   const addMaterial = () => {
     const newMaterials = [...formData.materials, { name: '', number: '', phone: '', task: '', detailOne: '', detailTwo: '', otherDetail: '' }];
@@ -386,16 +386,11 @@ export default function Index() {
               돌아가기
             </button>
             {image !== null ? (
-              // <button
-              //   style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
-              //   onClick={() => downloadImage(image)}
-              // >
-              //   이미지 다운로드
-              // </button>
               <button
                 style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
+                onClick={() => downloadImage(image)}
               >
-                우클릭으로 다운
+                이미지 다운로드
               </button>
             ) : (
               <button
