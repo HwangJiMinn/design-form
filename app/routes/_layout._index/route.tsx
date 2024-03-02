@@ -40,7 +40,7 @@ export default function Index() {
 
   const captureImage = async () => {
     if (captureRef.current) {
-      const imageData = await htmlToImage.toPng(captureRef.current);
+      const imageData = await htmlToImage.toSvg(captureRef.current);
       setImage(imageData);
     }
   };
