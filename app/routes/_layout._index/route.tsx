@@ -1,6 +1,5 @@
-import domToImage from 'dom-to-image';
-import download from 'downloadjs';
-// import * as htmlToImage from 'html-to-image';
+// import download from 'downloadjs';
+import * as htmlToImage from 'html-to-image';
 import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
@@ -29,7 +28,9 @@ export default function Index() {
     quantities: [{ color: '', quantity: '' }],
   });
 
-  console.log('formData', formData);
+  function randomNumberInRange(min : number, max : number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
   const [image, setImage] = useState<any>(null);
 
@@ -41,20 +42,44 @@ export default function Index() {
     setImage(null);
   };
 
+  // const captureImage = async () => {
+  //   if (captureRef.current) {
+  //     const imageData = await htmlToImage.toJpeg(captureRef.current);
+  //     setImage(imageData);
+  //   }
+  // };
+
   const captureImage = async () => {
     if (captureRef.current) {
       try {
-        const imageData = await domToImage.toPng(captureRef.current);
-        setImage(imageData);
+        // htmlToImage.toJpeg을 이용하여 DOM을 이미지로 변환합니다.
+        const imageData = await htmlToImage.toJpeg(captureRef.current);
+
+        // 이미지 데이터 변환 후 2.5초 지연을 줍니다.
+        setTimeout(() => {
+          console.log(imageData); // 콘솔에 이미지 데이터 URL 출력
+
+          // 'a' 태그를 생성하여 이미지 다운로드를 진행합니다.
+          const downloadLink = document.createElement('a');
+          let randomNum = randomNumberInRange(0, 999); // 랜덤 번호 생성
+          downloadLink.download = 'Image' + randomNum; // 다운로드될 파일명 설정
+
+          // 생성한 'a' 태그에 이미지 URL을 할당하고 클릭 이벤트를 발생시켜 파일 다운로드를 실행합니다.
+          downloadLink.href = imageData;
+          downloadLink.click();
+        }, 2500); // 2.5초 후 실행
+
+        return 'success'; // 성공 메시지 반환
       } catch (error) {
-        console.error('Capture Image Error:', error);
+        console.error('Capture Image Error:', error); // 오류 로깅
+        return error; // 오류 반환
       }
     }
   };
 
-  const downloadImage = (imageData : any) => {
-    download(imageData, 'form.png');
-  };
+  // const downloadImage = (imageData : any) => {
+  //   download(imageData, 'form.png');
+  // };
 
   const addMaterial = () => {
     const newMaterials = [...formData.materials, { name: '', number: '', phone: '', task: '', detailOne: '', detailTwo: '', otherDetail: '' }];
@@ -425,21 +450,21 @@ export default function Index() {
             >
               돌아가기
             </button>
-            {image !== null ? (
+            {/* {image !== null ? (
               <button
                 style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
                 onClick={() => downloadImage(image)}
               >
                 이미지 다운로드
               </button>
-            ) : (
-              <button
-                style={{ marginTop: '20px', width: '200px', height: '50px', color: 'black', backgroundColor: 'yellow', fontSize: '20px', fontWeight: 'bold' }}
-                onClick={captureImage}
-              >
-                이미지 캡처
-              </button>
-            )}
+            ) : ( */}
+            <button
+              style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
+              onClick={captureImage}
+            >
+              이미지 다운로드
+            </button>
+            {/* )} */}
 
           </div>
           <div
