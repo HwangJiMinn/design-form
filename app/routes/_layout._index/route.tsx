@@ -1,5 +1,4 @@
 import download from 'downloadjs';
-// import html2canvas from 'html2canvas';
 import * as htmlToImage from 'html-to-image';
 import { useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -28,8 +27,6 @@ export default function Index() {
     labors: [{ cost: '', price: '' }],
     quantities: [{ color: '', quantity: '' }],
   });
-
-  console.log('formData', formData);
 
   const [componentSet, setComponentSet] = useState(false);
   const captureRef = useRef<HTMLDivElement>(null);

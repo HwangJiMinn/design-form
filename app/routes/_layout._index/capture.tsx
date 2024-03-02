@@ -119,7 +119,7 @@ const Capture = (props : Props ) => {
             lineHeight: '100px',
             textAlign: 'center' }}
         >
-          <div style={{ height : imageHeight, width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ height : imageHeight, width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '1rem' }}>
             {formData.materialImage && (
               <img
                 src={URL.createObjectURL(formData.materialImage)}
