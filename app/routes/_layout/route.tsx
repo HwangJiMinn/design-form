@@ -3,8 +3,6 @@ import { RecoilRoot } from 'recoil';
 
 import { templateState } from '~/recoil/atoms';
 
-import Footer from './footer';
-import Header from './header';
 import type { loader } from './server';
 
 export { loader } from './server';
@@ -18,11 +16,9 @@ export default function Default() {
         set(templateState, data);
       }}
     >
-      <Header />
       <main>
         <Outlet />
       </main>
-      <Footer />
     </RecoilRoot>
   );
 }

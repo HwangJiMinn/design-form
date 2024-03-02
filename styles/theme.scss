@@ -21,7 +21,7 @@ $color-gray-10: #151718;
 
 // * theme colors
 $light-text-color: #0d0e0f;
-$dark-text-color: white;
+$dark-text-color: #0d0e0f;
 
 // * 라이트 테마일 때 색상 설정
 html.light {
@@ -56,36 +56,30 @@ html.light {
 
 // * 다크 테마일 때 색상 설정
 html.dark {
-  background-color: black;
-  color: $dark-text-color;
+  background-color: white;
+  color: $light-text-color;
 
   // * tag
-  header,
-  footer {
-    backdrop-filter: blur(0.313rem);
-    -webkit-backdrop-filter: blur(0.313rem);
-  }
-
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    color: $color-gray-1;
+    color: $color-gray-10;
   }
 
   header {
-    background-color: $color-gray-10;
-    box-shadow: 0 0.25rem 1.875rem rgba(255, 255, 255, 0.1);
+    background-color: $color-gray-1;
+    box-shadow: 0 0.25rem 1.875rem rgba(0, 0, 0, 0.1);
   }
 
   footer {
-    background-color: $color-gray-10;
+    background-color: $color-gray-1;
   }
 
   button {
-    color: $color-white;
+    color: $color-black;
   }
 
   // * class

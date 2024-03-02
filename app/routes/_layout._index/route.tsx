@@ -1,41 +1,493 @@
-import { useTranslation } from 'react-i18next';
-import { useRecoilValue } from 'recoil';
+import download from 'downloadjs';
+// import html2canvas from 'html2canvas';
+import * as htmlToImage from 'html-to-image';
+import { useRef, useState } from 'react';
+import styled from 'styled-components';
 
-import { THEME } from '~/common/constants';
-import Template from '~/components/template';
-import { useTheme } from '~/hooks/use-theme';
-import { templateState } from '~/recoil/atoms';
+import CustomDropdown from '~/components/select';
+
+import Capture from './capture';
 
 export { meta } from './server';
 
 export default function Index() {
-  const { t, i18n } = useTranslation();
-  const [theme, setTheme] = useTheme();
-  const templateValue = useRecoilValue(templateState);
+  const [formData, setFormData] = useState<any>({
+    designer: '',
+    factory: '',
+    startDate: '',
+    endDate: '',
+    number: '',
+    spMain: '',
+    type: '',
+    blendRatio: '',
+    materialImage: '',
+    materials: [{ name: '', number: '', phone: '', task: '', detailOne: '', detailTwo: '', otherDetail: '' }],
+    mainImage: null,
+    laborCost: '',
+    visibilityCost: '',
+    labors: [{ cost: '', price: '' }],
+    quantities: [{ color: '', quantity: '' }],
+  });
+
+  console.log('formData', formData);
+
+  const [componentSet, setComponentSet] = useState(false);
+  const captureRef = useRef<HTMLDivElement>(null);
+
+  const componentSetHandler = () => {
+    setComponentSet(!componentSet);
+  };
+
+  const captureImage = async () => {
+    if (captureRef.current) {
+      const imageData = await htmlToImage.toPng(captureRef.current);
+      download(imageData, 'captured-image.png');
+    }
+  };
+
+  const addMaterial = () => {
+    const newMaterials = [...formData.materials, { name: '', number: '', phone: '', task: '', detailOne: '', detailTwo: '', otherDetail: '' }];
+    setFormData({ ...formData, materials: newMaterials });
+  };
+
+  const addLaborInput = () => {
+    const newLabors = [...formData.labors, { cost: '', price: '' }];
+    setFormData({ ...formData, labors: newLabors });
+  };
+
+  const addQuantity = () => {
+    if (formData.quantities.length < 5) {
+      const newQuantities = [...formData.quantities, { color: '', quantity: '' }];
+      setFormData({ ...formData, quantities: newQuantities });
+    }
+  };
+
+  const handleChange = (e : any, section : string, index : number, field : string) => {
+    // 새로운 데이터 복사본 생성
+    const newData = [...formData[section]];
+
+    // 특정 필드 업데이트
+    newData[index] = { ...newData[index], [field]: e.target.value };
+
+    // formData 상태 업데이트
+    setFormData({ ...formData, [section]: newData });
+  };
+
+  const formatPrice = (price: string) => {
+    if (price.length === 0) {
+      return '';
+    }
+
+    const numericPrice = Number(price.replace(/[^0-9]/g, ''));
+    return numericPrice.toLocaleString('ko-KR');
+  };
+
+  const formatDate = (dateStr : any) => {
+    // 숫자만 남깁니다.
+    const nums = dateStr.replace(/[^\d]/g, '');
+
+    // 날짜 형식에 맞게 포맷합니다.
+    let newDate = '';
+
+    if (nums.length > 2) {
+      newDate = `${nums.substring(0, 2)}/${nums.substring(2)}`;
+    } else {
+      newDate = nums;
+    }
+
+    if (nums.length > 4) {
+      newDate = `${nums.substring(0, 2)}/${nums.substring(2, 4)}/${nums.substring(4, 6)}`;
+    }
+    return newDate;
+  };
+
+  // 날짜 입력 처리를 위한 onChange 핸들러
+  const handleDateChange = (e : any, field : string) => {
+    const newDate = formatDate(e.target.value);
+    setFormData({ ...formData, [field]: newDate });
+  };
 
   return (
-    <section className="p-4 text-center">
-      <h1 className="text-6xl">{templateValue}</h1>
-      <div className="mt-4">
-        <h1 className="text-3xl font-bold underline">{i18n.language}</h1>
-        <p>{t('hello')}</p>
-        <button
-          className="info"
-          onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'ko' : 'en')}
-        >
-          {t('localeChange')}
-        </button>
-      </div>
-      <div className="mt-4">
-        <h1 className="text-3xl font-bold underline">{theme}</h1>
-        <button onClick={() => setTheme(theme === THEME.DARK ? THEME.LIGHT : THEME.DARK)}>
-          {t('themeChange')}
-        </button>
-      </div>
-      <Template
-        title={t('button')}
-        name={t('button')}
-      />
-    </section>
+    <Wrapper>
+      {!componentSet ? (
+        <CreateContainer>
+          <Title>
+            작업 지시서
+          </Title>
+          <InputWrapper>
+            <Label isFirst>
+              디자이너
+            </Label>
+            <Input
+              type="text"
+              value={formData.designer}
+              onChange={e => setFormData({ ...formData, designer: e.target.value })}
+            />
+          </InputWrapper>
+          <SubTitle>
+            작업 정보
+          </SubTitle>
+          <InputWrapper>
+            <Label isFirst>
+              공장
+            </Label>
+            <Input
+              type="text"
+              value={formData.factory}
+              onChange={e => setFormData({ ...formData, factory: e.target.value })}
+            />
+            <Label>
+              투입일
+            </Label>
+            <Input
+              type="text"
+              value={formData.startDate}
+              onChange={(e) => handleDateChange(e, 'startDate')}
+            />
+            <Label>
+              입고일
+            </Label>
+            <Input
+              type="text"
+              value={formData.endDate}
+              onChange={(e) => handleDateChange(e, 'endDate')}
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label isFirst>
+              No
+            </Label>
+            <Input
+              type="text"
+              value={formData.number}
+              onChange={e => setFormData({ ...formData, number: e.target.value })}
+            />
+            <Label>
+              SP/MAIN
+            </Label>
+            <CustomDropdown
+              formData={formData}
+              setFormData={setFormData}
+            />
+            <Label>
+              복종
+            </Label>
+            <Input
+              type="text"
+              value={formData.type}
+              onChange={e => setFormData({ ...formData, type: e.target.value })}
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label isFirst>
+              혼용율
+            </Label>
+            <Input
+              type="text"
+              value={formData.blendRatio}
+              onChange={e => setFormData({ ...formData, blendRatio: e.target.value })}
+            />
+          </InputWrapper>
+          <SubTitle>
+            원단처
+          </SubTitle>
+          <InputWrapper>
+            <Label isFirst>
+              사진
+            </Label>
+            <input
+              type="file"
+              onChange={e => setFormData({ ...formData, materialImage : e.target.files?.[0] || null })}
+            />
+          </InputWrapper>
+          {formData.materials.map((material: any, index: number)  => (
+            <div key={index}>
+              <SubSubTitle>{`${index + 1} 원단처`}</SubSubTitle>
+              <InputWrapper>
+                <Input
+                  type="text"
+                  placeholder="*"
+                  value={material.name || ''}
+                  onChange={e => handleChange(e, 'materials', index, 'name')}
+                  style={{ marginRight: '2rem' }}
+                />
+                <Input
+                  type="text"
+                  placeholder="호"
+                  value={material.number || ''}
+                  onChange={e => handleChange(e, 'materials', index, 'number')}
+                  style={{ marginRight: '2rem' }}
+                />
+                <Input
+                  type="text"
+                  placeholder="전화번호"
+                  value={material.phone || ''}
+                  onChange={e => handleChange(e, 'materials', index, 'phone')}
+                  style={{ marginRight: '2rem' }}
+                />
+              </InputWrapper>
+              <InputWrapper>
+                <Input
+                  type="text"
+                  placeholder="작업사항"
+                  value={material.task || ''}
+                  onChange={e => handleChange(e, 'materials', index, 'task')}
+                  style={{ marginRight: '2rem' }}
+                />
+                <TextArea
+                  placeholder="@"
+                  value={material.detailOne || ''}
+                  onChange={e => handleChange(e, 'materials', index, 'detailOne')}
+                  style={{ marginRight: '2rem' }}
+                />
+                <TextArea
+                  placeholder="#"
+                  value={material.detailTwo || ''}
+                  onChange={e => handleChange(e, 'materials', index, 'detailTwo')}
+                  style={{ marginRight: '2rem' }}
+                />
+                <Input
+                  type="text"
+                  placeholder="<>"
+                  value={material.otherDetail || ''}
+                  onChange={e => handleChange(e, 'materials', index, 'otherDetail')}
+                  style={{ marginRight: '2rem' }}
+                />
+              </InputWrapper>
+            </div>
+          ))}
+          <div style={{ display : 'flex', justifyContent : 'flex-end' }}>
+            <button onClick={addMaterial}>+</button>
+          </div>
+          <SubTitle>
+            메인사진
+          </SubTitle>
+          <InputWrapper>
+            <Label isFirst>
+              사진
+            </Label>
+            <input
+              type="file"
+              onChange={e => setFormData({ ...formData, mainImage: e.target.files?.[0] || null })}
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <Label isFirst>
+              공임
+            </Label>
+            <Input
+              type="text"
+              placeholder="가격"
+              value={formatPrice(formData.laborCost)}
+              onChange={e => {
+                const newValue = e.target.value.replace(/,/g, '');
+                setFormData({ ...formData, laborCost: newValue }); }}
+            />
+            <Label>
+              시야게
+            </Label>
+            <Input
+              type="text"
+              placeholder="가격"
+              value={formatPrice(formData.visibilityCost)}
+              onChange={e =>
+              { const newValue = e.target.value.replace(/,/g, '');
+                setFormData({ ...formData, visibilityCost: newValue }); }}
+            />
+          </InputWrapper>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+            {
+              formData.labors.map((labor: { cost?: string; price?: string }, index: number) => (
+                <InputRow key={index}>
+                  <InputWrapper>
+                    <Input
+                      type="text"
+                      placeholder="단가"
+                      value={labor.cost || ''}
+                      onChange={(e) => {
+                        const newLabors = [...formData.labors];
+                        const newLabor = { ...labor, cost: e.target.value };
+                        newLabors[index] = newLabor;
+                        setFormData({ ...formData, labors: newLabors });
+                      }}
+                      style={{ marginRight: '1rem', width: '100px' }}
+                    />
+                    <Input
+                      type="text"
+                      placeholder="가격"
+                      value={labor.price && formatPrice(labor.price)}
+                      onChange={(e) => {
+                        const newLabors = [...formData.labors];
+                        const newValue = e.target.value.replace(/,/g, '');
+                        const newLabor = { ...labor, price: newValue };
+                        newLabors[index] = newLabor;
+                        setFormData({ ...formData, labors: newLabors });
+                      }}
+                    />
+                  </InputWrapper>
+                </InputRow>
+              ))
+            }
+          </div>
+          <div style={{ display : 'flex', justifyContent : 'flex-end' }}>
+            <button onClick={addLaborInput}>+</button>
+          </div>
+          <SubTitle>
+            스와치
+          </SubTitle>
+          <SubSubTitle>
+            출고수량
+          </SubSubTitle>
+          {formData.quantities.map((item : any, index : number) => (
+            <InputWrapper key={index}>
+              <Label isFirst>
+                Color
+              </Label>
+              <Input
+                type="text"
+                value={item.color}
+                onChange={e => handleChange(e, 'quantities', index, 'color')}
+                placeholder="색상"
+              />
+              <Label>
+                수량
+              </Label>
+              <Input
+                type="text"
+                value={item.quantity}
+                onChange={e => handleChange(e, 'quantities', index, 'quantity')}
+                placeholder="수량"
+              />
+            </InputWrapper>
+          ))}
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <button onClick={addQuantity}>+</button>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <button
+              style={{ marginTop: '100px', width: '300px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
+              onClick={componentSetHandler}
+            >
+              캡처
+            </button>
+          </div>
+        </CreateContainer>
+      ) : (
+        <>
+          <div style={{ display: 'flex', justifyContent: 'space-between', width : '794px' }}>
+            <button
+              style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'red', fontSize: '20px', fontWeight: 'bold' }}
+              onClick={componentSetHandler}
+            >
+              돌아가기
+            </button>
+            <button
+              style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
+              onClick={captureImage}
+            >
+              이미지 다운로드
+            </button>
+          </div>
+          <div
+            style={{
+              width: '794px',
+              height: '1123px',
+              backgroundColor: 'white',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '1rem',
+            }}
+            ref={captureRef}
+          >
+            <Capture
+              formData={formData}
+            />
+          </div>
+        </>
+      )}
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+`;
+
+const CreateContainer = styled.div`
+    width: 48rem;
+    margin: 7.5rem 0 11.25rem;
+`;
+
+const Title = styled.h1`
+    display: flex;
+    justify-content: center;
+    font-size: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.0225rem;
+    cursor: text;
+    margin-bottom: 3rem;
+`;
+
+const SubTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.015rem;
+  cursor: text;
+  margin-top: 2rem;
+`;
+
+const SubSubTitle = styled.h3`
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01125rem;
+  cursor: text;
+  margin-top: 1.5rem;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.4rem;
+`;
+
+const Label = styled.label<{ isFirst?: boolean; }>`
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 500;
+  cursor: text;
+  width: 5rem;
+  margin-left: ${({ isFirst }) => isFirst ? 'none' : '1rem'};
+`;
+
+const Input = styled.input`
+  width: 150px;
+  height: 2rem;
+  padding: 1rem 0.5rem;
+  border: 0.125rem solid #d9d9d9;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 400;
+`;
+
+const InputRow = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+`;
+
+const TextArea = styled.textarea`
+  width: 150px;
+  height: 4rem;
+  padding: 0 0.5rem;
+  border: 0.125rem solid #d9d9d9;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 130%;
+  cursor: text;
+  outline: none;
+`;
