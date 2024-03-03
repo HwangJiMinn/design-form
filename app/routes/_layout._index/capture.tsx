@@ -10,8 +10,6 @@ const Capture = (props : Props ) => {
 
   const [imageHeight, setImageHeight] = useState('45%');
 
-  const [totalCost, setTotalCost] = useState(0);
-
   const formatPrice = (price: string) => {
     if (price.length === 0) {
       return '';
@@ -30,13 +28,6 @@ const Capture = (props : Props ) => {
       setImageHeight('45%');
     }
   }, [formData.materials]);
-
-  useEffect(() => {
-    const totalPrices = formData.labors.reduce((sum : any, labor : any) => sum + (parseInt(labor.price) || 0), 0);
-    const additionalCosts = parseInt(formData.laborCost) + parseInt(formData.visibilityCost) || 0;
-
-    setTotalCost(totalPrices + additionalCosts);
-  }, [formData]);
 
   return (
     <A4Container>
@@ -146,10 +137,10 @@ const Capture = (props : Props ) => {
                       {material.otherDetail ? `<${material.otherDetail}>` : ''}
                     </TableCell>
                   </TableRow>
-                  <TableRow style={{ height : 'auto', paddingTop: '5px' }}>
-                    <TableCell style={{ width: '25%', fontSize: '13px', border: 'none', textAlign: 'start' }}>{material.task ? `·${material.task}` : ''}</TableCell>
-                    <TableCell style={{ width: '25%', fontSize: '13px', height: 'auto', whiteSpace : 'pre-line', border: 'none', textAlign: 'start' }}><div>{material.detailOne}</div></TableCell>
-                    <TableCell style={{ width: '25%', fontSize: '13px', height: 'auto', whiteSpace : 'pre-line', border: 'none', textAlign: 'start' }}>{material.detailTwo}</TableCell>
+                  <TableRow style={{ height : 'auto' }}>
+                    <TableCell style={{ width: '25%', fontSize: '13px', border: 'none', textAlign: 'start', paddingTop: '5px' }}>{material.task ? `·${material.task}` : ''}</TableCell>
+                    <TableCell style={{ width: '25%', fontSize: '13px', height: 'auto', whiteSpace : 'pre-line', border: 'none', textAlign: 'start', paddingTop: '5px' }}><div>{material.detailOne}</div></TableCell>
+                    <TableCell style={{ width: '25%', fontSize: '13px', height: 'auto', whiteSpace : 'pre-line', border: 'none', textAlign: 'start', paddingTop: '5px' }}>{material.detailTwo}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -205,47 +196,81 @@ const Capture = (props : Props ) => {
                 </Table>
               </div>
             ))}
+            {formData.costGroups && formData.costGroups.map((group : any, groupIndex : number) => (
+              <>
+                {group.costs.map((cost : any, index : number) => (
+                  <div
+                    key={index}
+                    style={{ marginBottom: '10px' }}
+                  >
+                    <Table
+                      key={index}
+                      style={{ width: '100%' }}
+                    >
+                      <TableBody>
+                        <TableRow>
+                          <TableCell style={{ width: '10%', textAlign: 'start', height: 'auto', whiteSpace: 'nowrap', border: 'none' }}>{cost.name}</TableCell>
+                          <TableCell style={{ width: '40%', textAlign: 'start', height: 'auto', whiteSpace: 'nowrap', border: 'none' }}>{formatPrice(cost.price)}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                ))}
+              </>
+            ))}
           </div>
           <div style={{ height: '20%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Table style={{ width: '100%' }}>
               <TableBody>
                 <TableRow>
-                  <TableCell style={{ width: '30%', height: '50px', whiteSpace: 'nowrap', fontSize: '23px', borderLeft: 'none', fontWeight: '600' }}>공임</TableCell>
-                  <TableCell style={{ width: '70%', textAlign: 'start', height: '50px', whiteSpace: 'nowrap', padding: '0 5px', fontSize: '16px', borderRight: 'none' }}>
+                  <TableCell style={{ width: '25%', height: '50px', whiteSpace: 'nowrap', fontSize: '23px', borderLeft: 'none', fontWeight: '600' }}>공임</TableCell>
+                  <TableCell style={{ width: '75%', textAlign: 'start', height: '50px', whiteSpace: 'nowrap', padding: '0 5px', fontSize: '15px', borderRight: 'none' }}>
                     {formData.visibilityCost ? `${formatPrice(formData.laborCost)}원/ 시야게${formatPrice(formData.visibilityCost)}원` : `${formatPrice(formData.laborCost)}원`}
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
-            <Table style={{ width: '100%' }}>
-              <TableBody>
-                <TableRow>
-                  <TableCell
-                    style={{ width: '30%',
-                      height: '50px',
-                      whiteSpace: 'nowrap',
-                      fontSize: '23px',
-                      borderLeft: 'none',
-                      fontWeight: '600',
-                      borderBottom: 'none' }}
-                  >
-                    원가
-                  </TableCell>
-                  <TableCell
-                    style={{ width: '70%',
-                      textAlign: 'start',
-                      height: '50px',
-                      whiteSpace: 'nowrap',
-                      paddingLeft: '10px',
-                      fontSize: '23px',
-                      borderRight: 'none',
-                      borderBottom: 'none' }}
-                  >
-                    {`${formatPrice(totalCost.toString())}원`}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            {formData.costGroups && formData.costGroups.length > 0 ? (
+              <Table style={{ width: '100%' }}>
+                <TableBody>
+                  <TableRow>
+                    <TableCell
+                      rowSpan={formData.costGroups.length + 1} // 원가 셀이 모든 그룹 행을 포함하도록 rowSpan 설정
+                      style={{ width: '25%', fontSize: '23px', borderLeft: 'none', whiteSpace: 'nowrap', fontWeight: '600', borderBottom: 'none' }}
+                    >
+                      원가
+                    </TableCell>
+                  </TableRow>
+                  {formData.costGroups.map((group: any, index: number) => {
+                    const groupTotal = group.costs.reduce((sum: any, item: any) => sum + (parseInt(item.price) || 0), 0);
+                    const laborsTotal = formData.labors.reduce((sum: any, labor: any) => sum + (parseInt(labor.price) || 0), 0);
+                    const laborCost = parseInt(formData.laborCost) || 0; // 공임가
+                    const visibilityCost = parseInt(formData.visibilityCost) || 0; // 시야게 가격
+                    const totalWithLabors = groupTotal + laborsTotal + laborCost + visibilityCost;
+                    return (
+                      <TableRow key={index}>
+                        <TableCell style={{ width: '75%', textAlign: 'start', fontSize: '20px', borderRight: 'none', borderBottom: 'none', whiteSpace: 'nowrap', padding: '0 5px', borderTop: index === 0 ? '1px solid black' : 'none' }}>
+                          {`${group.title}: ${formatPrice(totalWithLabors.toString())}원`}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            ) : (
+              <Table style={{ width: '100%' }}>
+                <TableBody>
+                  <TableRow>
+                    <TableCell style={{ width: '25%', height: '50px', fontSize: '23px', borderLeft: 'none', fontWeight: '600', borderBottom: 'none' }}>
+                      원가
+                    </TableCell>
+                    <TableCell style={{ width: '75%', textAlign: 'start', fontSize: '23px', borderRight: 'none', borderBottom: 'none', padding: '0 5px' }}>
+                      {`${formatPrice((formData.labors.reduce((sum :any, labor : any) => sum + (parseInt(labor.price) || 0), 0) + parseInt(formData.laborCost || '0') + parseInt(formData.visibilityCost || '0')).toString())}원`}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            )}
           </div>
         </div>
       </div>

@@ -25,6 +25,7 @@ export default function Index() {
     laborCost: '',
     visibilityCost: '',
     labors: [{ cost: '', price: '' }],
+    costGroups: [],
     quantities: [{ color: '', quantity: '' }],
   });
 
@@ -37,13 +38,6 @@ export default function Index() {
     setComponentSet(!componentSet);
     setImage(null);
   };
-
-  // const captureImage = async () => {
-  //   if (captureRef.current) {
-  //     const imageData = await htmlToImage.toJpeg(captureRef.current);
-  //     setImage(imageData);
-  //   }
-  // };
 
   const captureImage = async () => {
     if (captureRef.current) {
@@ -74,14 +68,72 @@ export default function Index() {
     setFormData({ ...formData, materials: newMaterials });
   };
 
+  const removeMaterial = (index: number) => {
+    if (formData.materials.length > 1){
+      const newMaterials = [...formData.materials];
+      newMaterials.splice(index, 1);
+      setFormData({ ...formData, materials: newMaterials });
+    }
+  };
+
   const addLaborInput = () => {
     const newLabors = [...formData.labors, { cost: '', price: '' }];
     setFormData({ ...formData, labors: newLabors });
   };
 
+  const removeLaborInput = (index: number) => {
+    if (formData.labors.length > 1){
+      const newLabors = [...formData.labors];
+      newLabors.splice(index, 1);
+      setFormData({ ...formData, labors: newLabors });
+    }
+  };
+
+  const addCostGroup = () => {
+    if (formData.costGroups.length < 2){
+      setFormData({
+        ...formData,
+        costGroups: [
+          ...formData.costGroups,
+          { title: '', costs: [{ name: '', price: '' }] },
+          { title: '', costs: [{ name: '', price: '' }] },
+        ],
+      });
+    }
+  };
+
+  const removeCostGroup = () => {
+    setFormData({ ...formData, costGroups: [] });
+  };
+
+  // 특정 원가 계산 그룹 내의 새비용 항목을 추가하는 함수
+  const addCostItem = (groupIndex : any) => {
+    const newCostGroups = [...formData.costGroups];
+    newCostGroups[groupIndex].costs.push({ name: '', price: '' });
+    setFormData({ ...formData, costGroups: newCostGroups });
+  };
+
+  const removeCostItem = (groupIndex: number, costIndex: number) => {
+    if (formData.costGroups[groupIndex].costs.length > 1){
+      const newCostGroups = [...formData.costGroups];
+      const newCosts = [...newCostGroups[groupIndex].costs];
+      newCosts.splice(costIndex, 1);
+      newCostGroups[groupIndex].costs = newCosts;
+      setFormData({ ...formData, costGroups: newCostGroups });
+    }
+  };
+
   const addQuantity = () => {
     if (formData.quantities.length < 5) {
       const newQuantities = [...formData.quantities, { color: '', quantity: '' }];
+      setFormData({ ...formData, quantities: newQuantities });
+    }
+  };
+
+  const removeQuantity = (index: number) => {
+    if (formData.quantities.length > 1){
+      const newQuantities = [...formData.quantities];
+      newQuantities.splice(index, 1);
       setFormData({ ...formData, quantities: newQuantities });
     }
   };
@@ -161,6 +213,7 @@ export default function Index() {
               onChange={e => setFormData({ ...formData, designer: e.target.value })}
             />
           </InputWrapper>
+          <Divider />
           <SubTitle>
             작업 정보
           </SubTitle>
@@ -225,6 +278,7 @@ export default function Index() {
               onChange={e => setFormData({ ...formData, blendRatio: e.target.value })}
             />
           </InputWrapper>
+          <Divider />
           <SubTitle>
             원단처
           </SubTitle>
@@ -249,7 +303,7 @@ export default function Index() {
           </InputWrapper>
           {formData.materials.map((material: any, index: number)  => (
             <div key={index}>
-              <SubSubTitle>{`${index + 1} 원단처`}</SubSubTitle>
+              <SubSubTitle style={{ marginBottom : '1rem' }}>{`${index + 1} 원단처`}</SubSubTitle>
               <InputWrapper>
                 <Input
                   type="text"
@@ -304,8 +358,20 @@ export default function Index() {
             </div>
           ))}
           <div style={{ display : 'flex', justifyContent : 'flex-end' }}>
-            <button onClick={addMaterial}>+</button>
+            <button
+              onClick={addMaterial}
+              style={{ backgroundColor : 	'	#800080', color: 'white'  }}
+            >
+              + 원단처 추가
+            </button>
+            <button
+              onClick={() => removeMaterial(formData.materials.length - 1)}
+              style={{ backgroundColor : '#B22222', color: 'white', marginLeft: '1rem'  }}
+            >
+              -
+            </button>
           </div>
+          <Divider />
           <SubTitle>
             메인사진
           </SubTitle>
@@ -328,6 +394,9 @@ export default function Index() {
               }}
             />
           </InputWrapper>
+          <SubSubTitle>
+            원가 계산
+          </SubSubTitle>
           <InputWrapper>
             <Label isFirst>
               공임
@@ -359,7 +428,7 @@ export default function Index() {
                   <InputWrapper>
                     <Input
                       type="text"
-                      placeholder="단가"
+                      placeholder="단가 제목"
                       value={labor.cost || ''}
                       onChange={(e) => {
                         const newLabors = [...formData.labors];
@@ -387,8 +456,95 @@ export default function Index() {
             }
           </div>
           <div style={{ display : 'flex', justifyContent : 'flex-end' }}>
-            <button onClick={addLaborInput}>+</button>
+            <button
+              onClick={addLaborInput}
+              style={{ backgroundColor : 	'#800080', color: 'white'  }}
+            >
+              + 가격 항목 추가
+            </button>
+            <button
+              onClick={() => removeLaborInput(formData.labors.length - 1)}
+              style={{ backgroundColor : '#B22222', color: 'white', marginLeft: '1rem'  }}
+            >
+              -
+            </button>
           </div>
+          <SubSubTitle>
+            원가 따로 계산
+          </SubSubTitle>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginTop : '1rem' }}>
+            {
+              formData.costGroups.map((group : any, groupIndex : number) => (
+                <div key={groupIndex}>
+                  <Input
+                    type="text"
+                    placeholder="원가 계산 제목"
+                    value={group.title}
+                    onChange={(e) => {
+                      const newCostGroups = [...formData.costGroups];
+                      newCostGroups[groupIndex] = { ...group, title: e.target.value };
+                      setFormData({ ...formData, costGroups: newCostGroups });
+                    }}
+                    style={{ marginBottom: '1rem' }}
+                  />
+                  {group.costs && group.costs.map((cost : any, costIndex : number) => (
+                    <InputWrapper key={costIndex}>
+                      <Input
+                        type="text"
+                        placeholder="비용 이름"
+                        value={cost.name}
+                        onChange={(e) => {
+                          const newCostGroups = [...formData.costGroups];
+                          newCostGroups[groupIndex].costs[costIndex] = { ...cost, name: e.target.value };
+                          setFormData({ ...formData, costGroups: newCostGroups });
+                        }}
+                        style={{ marginRight: '1rem', width: '100px' }}
+                      />
+                      <Input
+                        type="text"
+                        placeholder="가격"
+                        value={cost.price && formatPrice(cost.price)}
+                        onChange={(e) => {
+                          const newCostGroups = [...formData.costGroups];
+                          newCostGroups[groupIndex].costs[costIndex] = { ...cost, price: e.target.value.replace(/,/g, '') };
+                          setFormData({ ...formData, costGroups: newCostGroups });
+                        }}
+                      />
+                    </InputWrapper>
+                  ))}
+                  <div style={{ display : 'flex', justifyContent : 'space-between' }}>
+                    <button
+                      onClick={() => addCostItem(groupIndex)}
+                      style={{ backgroundColor : 	'	#800080', color: 'white'  }}
+                    >
+                      + 비용 항목 추가
+                    </button>
+                    <button
+                      onClick={() => removeCostItem(groupIndex, group.costs.length - 1)}
+                      style={{ backgroundColor : '#B22222', color: 'white', marginLeft: '1rem'  }}
+                    >
+                      -
+                    </button>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+          <div style={{ display : 'flex', justifyContent : 'flex-end' }}>
+            <button
+              onClick={addCostGroup}
+              style={{ backgroundColor : 	'	#800080', color: 'white'  }}
+            >
+              + 원가 계산 추가
+            </button>
+            <button
+              onClick={() => removeCostGroup()}
+              style={{ backgroundColor : '#B22222', color: 'white', marginLeft: '1rem'  }}
+            >
+              -
+            </button>
+          </div>
+          <Divider />
           <SubTitle>
             스와치
           </SubTitle>
@@ -418,8 +574,20 @@ export default function Index() {
             </InputWrapper>
           ))}
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <button onClick={addQuantity}>+</button>
+            <button
+              onClick={addQuantity}
+              style={{ backgroundColor : 	'	#800080', color: 'white'  }}
+            >
+              + 스와치 추가
+            </button>
+            <button
+              onClick={() => removeQuantity(formData.quantities.length - 1)}
+              style={{ backgroundColor : '#B22222', color: 'white', marginLeft: '1rem'  }}
+            >
+              -
+            </button>
           </div>
+          <Divider />
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <button
               style={{ marginTop: '100px', width: '300px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
@@ -433,7 +601,7 @@ export default function Index() {
         <>
           <div style={{ display: 'flex', justifyContent: 'space-between', width : '794px' }}>
             <button
-              style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: 'red', fontSize: '20px', fontWeight: 'bold' }}
+              style={{ marginTop: '20px', width: '200px', height: '50px', color: 'white', backgroundColor: '#B22222', fontSize: '20px', fontWeight: 'bold' }}
               onClick={componentSetHandler}
             >
               돌아가기
@@ -577,4 +745,11 @@ const TextArea = styled.textarea`
   line-height: 130%;
   cursor: text;
   outline: none;
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #d9d9d9;
+  margin: 1rem 0;
 `;
