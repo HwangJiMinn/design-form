@@ -249,7 +249,18 @@ const Capture = (props : Props ) => {
                     const totalWithLabors = groupTotal + laborsTotal + laborCost + visibilityCost;
                     return (
                       <TableRow key={index}>
-                        <TableCell style={{ width: '75%', textAlign: 'start', fontSize: '20px', borderRight: 'none', borderBottom: 'none', whiteSpace: 'nowrap', padding: '0 5px', borderTop: index === 0 ? '1px solid black' : 'none' }}>
+                        <TableCell
+                          style={{
+                            width: '75%',
+                            textAlign: 'start',
+                            fontSize: '20px',
+                            borderRight: 'none',
+                            borderBottom: 'none',
+                            whiteSpace: 'nowrap',
+                            padding: '0 5px',
+                            borderTop: index !== 0 ? 'none' : undefined,
+                          }}
+                        >
                           {`${group.title}: ${formatPrice(totalWithLabors.toString())}원`}
                         </TableCell>
                       </TableRow>
