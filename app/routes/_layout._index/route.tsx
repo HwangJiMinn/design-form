@@ -54,7 +54,10 @@ export default function Index() {
 
       while (dataUrl.length < minDataLength && attempts < maxAttempts) {
         // htmlToImage.toJpeg을 이용하여 DOM을 이미지로 변환
-        dataUrl = await htmlToImage.toJpeg(captureRef.current);
+        dataUrl = await htmlToImage.toJpeg(captureRef.current, {
+          skipFonts: true,
+          fontEmbedCSS: '',
+        });
         attempts += 1; // 시도 횟수 증가
       }
 
