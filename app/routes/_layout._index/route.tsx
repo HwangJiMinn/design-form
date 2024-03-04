@@ -29,8 +29,6 @@ export default function Index() {
     quantities: [{ color: '', quantity: '' }],
   });
 
-  const [isMobile, setIsMobile] = useState(false);
-
   const [image, setImage] = useState<any>(null);
 
   const [componentSet, setComponentSet] = useState(false);
@@ -41,38 +39,23 @@ export default function Index() {
     setImage(null);
   };
 
-  useEffect(() => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    if (isMobile){
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  }, []);
-
   const captureImage = async () => {
     if (captureRef.current) {
-      if (isMobile){
-        let dataUrl = '';
-        const minDataLength = 2000000; // 최소 데이터 길이 설정
-        let attempts = 0; // 시도 횟수 카운터
-        const maxAttempts = 10; // 최대 시도 횟수
+      let dataUrl = '';
+      const minDataLength = 2000000; // 최소 데이터 길이 설정
+      let attempts = 0; // 시도 횟수 카운터
+      const maxAttempts = 10; // 최대 시도 횟수
 
-        while (dataUrl.length < minDataLength && attempts < maxAttempts) {
+      while (dataUrl.length < minDataLength && attempts < maxAttempts) {
         // htmlToImage.toJpeg을 이용하여 DOM을 이미지로 변환
-          dataUrl = await htmlToImage.toJpeg(captureRef.current, {
-            skipFonts: true,
-            fontEmbedCSS: '',
-          });
-          attempts += 1; // 시도 횟수 증가
-        }
-
-        setImage(dataUrl);
-      } else {
-        const dataUrl = await htmlToImage.toPng(captureRef.current);
-        setImage(dataUrl);
+        dataUrl = await htmlToImage.toJpeg(captureRef.current, {
+          skipFonts: true,
+          fontEmbedCSS: '',
+        });
+        attempts += 1; // 시도 횟수 증가
       }
+
+      setImage(dataUrl);
     }
   };
 
