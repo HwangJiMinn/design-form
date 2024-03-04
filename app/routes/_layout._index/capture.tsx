@@ -127,18 +127,18 @@ const Capture = (props : Props ) => {
               >
                 <TableBody>
                   <TableRow>
-                    <TableCell style={{ width: '25%', fontWeight: '700', border: 'none', textAlign: 'start', height: 'auto' }}>{material.name ?`*${material.name}` : ''}</TableCell>
+                    <TableCell style={{ width: '25%', fontWeight: '700', border: 'none', textAlign: 'start', height: 'auto' }}>{material.name ?`* ${material.name}` : ''}</TableCell>
                     <TableCell style={{ width: '25%', fontWeight: '700', border: 'none', textAlign: 'start', height: 'auto' }}>{material.number ? `${material.number}호` : ''}</TableCell>
                     <TableCell style={{ width: '25%', fontWeight: '700', border: 'none', textAlign: 'start', height: 'auto' }}>{material.phone}</TableCell>
                     <TableCell
                       style={{ width: '25%', border: 'none', fontWeight: '700', fontSize: '20px', height: 'auto' }}
                       rowSpan={2}
                     >
-                      {material.otherDetail ? `<${material.otherDetail}>` : ''}
+                      {material.otherDetail ? `< ${material.otherDetail} >` : ''}
                     </TableCell>
                   </TableRow>
                   <TableRow style={{ height : 'auto' }}>
-                    <TableCell style={{ width: '25%', fontSize: '13px', border: 'none', textAlign: 'start', paddingTop: '5px' }}>{material.task ? `·${material.task}` : ''}</TableCell>
+                    <TableCell style={{ width: '25%', fontSize: '13px', border: 'none', textAlign: 'start', paddingTop: '5px' }}>{material.task ? `· ${material.task}` : ''}</TableCell>
                     <TableCell style={{ width: '25%', fontSize: '13px', height: 'auto', whiteSpace : 'pre-line', border: 'none', textAlign: 'start', paddingTop: '5px' }}><div>{material.detailOne}</div></TableCell>
                     <TableCell style={{ width: '25%', fontSize: '13px', height: 'auto', whiteSpace : 'pre-line', border: 'none', textAlign: 'start', paddingTop: '5px' }}>{material.detailTwo}</TableCell>
                   </TableRow>
