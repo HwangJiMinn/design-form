@@ -173,14 +173,17 @@ const Capture = (props : Props ) => {
                 </TableRow>
               </TableBody>
             </Table>
-            <Table style={{ width: '100%', marginBottom: '10px' }}>
-              <TableBody>
-                <TableRow>
-                  <TableCell style={{ width: '10%', textAlign: 'start', height: 'auto', whiteSpace: 'nowrap', border: 'none' }}>시야게</TableCell>
-                  <TableCell style={{ width: '40%', textAlign: 'start', height: 'auto', whiteSpace: 'nowrap', border: 'none' }}>{formatPrice(formData.visibilityCost)}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            {formData.visibilityCost !== '' && (
+              <Table style={{ width: '100%', marginBottom: '10px' }}>
+                <TableBody>
+                  <TableRow>
+                    <TableCell style={{ width: '10%', textAlign: 'start', height: 'auto', whiteSpace: 'nowrap', border: 'none' }}>시야게</TableCell>
+                    <TableCell style={{ width: '40%', textAlign: 'start', height: 'auto', whiteSpace: 'nowrap', border: 'none' }}>{formatPrice(formData.visibilityCost)}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            )}
+
             {formData.labors && formData.labors.map((labor: any, index: number) => (
               <div
                 key={index}
