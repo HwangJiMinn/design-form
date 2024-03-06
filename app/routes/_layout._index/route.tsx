@@ -1,6 +1,6 @@
 import download from 'downloadjs';
 import * as htmlToImage from 'html-to-image';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import CustomDropdown from '~/components/select';

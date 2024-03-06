@@ -183,7 +183,6 @@ const Capture = (props : Props ) => {
                 </TableBody>
               </Table>
             )}
-
             {formData.labors && formData.labors.map((labor: any, index: number) => (
               <div
                 key={index}
@@ -239,7 +238,7 @@ const Capture = (props : Props ) => {
                   <TableRow>
                     <TableCell
                       rowSpan={formData.costGroups.length + 1} // 원가 셀이 모든 그룹 행을 포함하도록 rowSpan 설정
-                      style={{ width: '25%', fontSize: '23px', borderLeft: 'none', whiteSpace: 'nowrap', fontWeight: '600', borderBottom: 'none' }}
+                      style={{ width: '25%', fontSize: '23px', borderLeft: 'none', whiteSpace: 'nowrap', fontWeight: '600', borderBottom: 'none'  }}
                     >
                       원가
                     </TableCell>
@@ -297,10 +296,11 @@ const Capture = (props : Props ) => {
             <TableBody>
               <TableRow>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '7.5%',
                     borderRight: '1px solid black',
                     borderBottom: '1px solid black',
+                    borderTop: 'none',
                     whiteSpace: 'pre-line',
                     lineHeight: '1.5' }}
                   rowSpan={2}
@@ -309,49 +309,55 @@ const Capture = (props : Props ) => {
                   수량`}
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '7.5%',
                     borderRight: '1px solid black',
                     borderBottom: '1px solid black',
+                    borderTop: 'none',
                     fontSize: '13px' }}
                 >
                   COLOR
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '17%',
                     borderRight: '1px solid black',
+                    borderTop: 'none',
                     borderBottom: '1px solid black' }}
                 >
                   {formData.quantities[0] ? formData.quantities[0].color : ''}
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '17%',
+                    borderTop: 'none',
                     borderRight: '1px solid black',
                     borderBottom: '1px solid black' }}
                 >
                   {formData.quantities[1] ? formData.quantities[1].color : ''}
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '17%',
                     borderRight: '1px solid black',
+                    borderTop: 'none',
                     borderBottom: '1px solid black' }}
                 >
                   {formData.quantities[2] ? formData.quantities[2].color : ''}
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '17%',
                     borderRight: '1px solid black',
+                    borderTop: 'none',
                     borderBottom: '1px solid black' }}
                 >
                   {formData.quantities[3] ? formData.quantities[3].color : ''}
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '17%',
+                    borderTop: 'none',
                     borderBottom: '1px solid black' }}
                 >
                   {formData.quantities[4] ? formData.quantities[4].color : ''}
@@ -359,32 +365,35 @@ const Capture = (props : Props ) => {
               </TableRow>
               <TableRow>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '7.5%',
                     borderRight: '1px solid black',
+                    borderTop: 'none',
                     borderBottom: '1px solid black',
                     fontSize: '13px' }}
                 >
                   수량
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '17%',
+                    borderTop: 'none',
                     borderRight: '1px solid black',
                     borderBottom: '1px solid black' }}
                 >
                   {formData.quantities[0] ? formData.quantities[0].quantity : ''}
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '17%',
                     borderRight: '1px solid black',
+                    borderTop: 'none',
                     borderBottom: '1px solid black' }}
                 >
                   {formData.quantities[1] ? formData.quantities[1].quantity : ''}
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '17%',
                     borderRight: '1px solid black',
                     borderBottom: '1px solid black' }}
@@ -392,16 +401,18 @@ const Capture = (props : Props ) => {
                   {formData.quantities[2] ? formData.quantities[2].quantity : ''}
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '17%',
                     borderRight: '1px solid black',
+                    borderTop: 'none',
                     borderBottom: '1px solid black' }}
                 >
                   {formData.quantities[3] ? formData.quantities[3].quantity : ''}
                 </TableCell>
                 <TableCell
-                  borderNone
+                  borderNone={true}
                   style={{ width: '17%',
+                    borderTop: 'none',
                     borderBottom: '1px solid black' }}
                 >
                   {formData.quantities[4] ? formData.quantities[4].quantity : ''}
