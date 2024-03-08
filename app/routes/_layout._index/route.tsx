@@ -1,6 +1,7 @@
 import download from 'downloadjs';
 import * as htmlToImage from 'html-to-image';
-import { useRef, useState } from 'react';
+import type { ChangeEvent } from 'react';
+import { useRef, useState  } from 'react';
 import styled from 'styled-components';
 
 import CustomDropdown from '~/components/select';
@@ -33,6 +34,35 @@ export default function Index() {
 
   const [componentSet, setComponentSet] = useState(false);
   const captureRef = useRef<HTMLDivElement>(null);
+
+  const downloadRef = useRef(null);
+
+  const saveJson = () => {
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(formData));
+
+    if (downloadRef.current) {
+      (downloadRef.current as HTMLAnchorElement).setAttribute('href', dataStr);
+      (downloadRef.current as HTMLAnchorElement).setAttribute('download', '작지저장.json');
+      (downloadRef.current as HTMLAnchorElement).click();
+    }
+  };
+
+  const loadJson = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const data = e.target?.result;
+
+        if (typeof data === 'string') {
+          setFormData(JSON.parse(data));
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
 
   const componentSetHandler = () => {
     setComponentSet(!componentSet);
@@ -203,6 +233,37 @@ export default function Index() {
           <Title>
             작업 지시서
           </Title>
+          <SubTitle>
+            저장 및 저장 데이터 가져오기
+          </SubTitle>
+          <InputWrapper>
+            <Label isFirst>
+              저장
+            </Label>
+            <>
+              <a
+                ref={downloadRef}
+                style={{ display: 'none' }}
+                download="formData.json"
+              />
+              <button
+                onClick={saveJson}
+                style={{ color: 'white', backgroundColor: 'green', fontSize: '16px' }}
+              >
+                저장하기
+              </button>
+            </>
+          </InputWrapper>
+          <InputWrapper>
+            <Label isFirst>
+              가져오기
+            </Label>
+            <input
+              type="file"
+              onChange={loadJson}
+            />
+          </InputWrapper>
+          <Divider />
           <InputWrapper>
             <Label isFirst>
               디자이너
