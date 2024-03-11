@@ -234,26 +234,8 @@ export default function Index() {
             작업 지시서
           </Title>
           <SubTitle>
-            저장 및 저장 데이터 가져오기
+            저장 데이터 가져오기
           </SubTitle>
-          <InputWrapper>
-            <Label isFirst>
-              저장
-            </Label>
-            <>
-              <a
-                ref={downloadRef}
-                style={{ display: 'none' }}
-                download="formData.json"
-              />
-              <button
-                onClick={saveJson}
-                style={{ color: 'white', backgroundColor: 'green', fontSize: '16px' }}
-              >
-                저장하기
-              </button>
-            </>
-          </InputWrapper>
           <InputWrapper>
             <Label isFirst>
               가져오기
@@ -649,7 +631,18 @@ export default function Index() {
             </button>
           </div>
           <Divider />
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <a
+              ref={downloadRef}
+              style={{ display: 'none' }}
+              download="formData.json"
+            />
+            <button
+              onClick={saveJson}
+              style={{  marginTop: '100px', width: '300px', height: '50px', color: 'white', backgroundColor: '#0000CD', fontSize: '20px', fontWeight: 'bold' }}
+            >
+              데이터 저장하기
+            </button>
             <button
               style={{ marginTop: '100px', width: '300px', height: '50px', color: 'white', backgroundColor: 'green', fontSize: '20px', fontWeight: 'bold' }}
               onClick={componentSetHandler}
@@ -754,6 +747,7 @@ const SubTitle = styled.h2`
   letter-spacing: -0.015rem;
   cursor: text;
   margin-top: 2rem;
+  margin-bottom: 0.5rem;
 `;
 
 const SubSubTitle = styled.h3`
