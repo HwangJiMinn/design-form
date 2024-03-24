@@ -398,7 +398,22 @@ export default function Index() {
                   style={{ marginRight: '2rem' }}
                 />
               </InputWrapper>
+              <div
+                style={{
+                  display : 'flex',
+                  justifyContent : 'flex-end',
+                  marginBottom : '1rem',
+                }}
+              >
+                <button
+                  onClick={() => removeMaterial(index)}
+                  style={{ backgroundColor : '#B22222', color: 'white', marginLeft: '1rem'  }}
+                >
+                  -
+                </button>
+              </div>
             </div>
+
           ))}
           <div style={{ display : 'flex', justifyContent : 'flex-end' }}>
             <button
@@ -407,12 +422,7 @@ export default function Index() {
             >
               + 원단처 추가
             </button>
-            <button
-              onClick={() => removeMaterial(formData.materials.length - 1)}
-              style={{ backgroundColor : '#B22222', color: 'white', marginLeft: '1rem'  }}
-            >
-              -
-            </button>
+
           </div>
           <Divider />
           <SubTitle>

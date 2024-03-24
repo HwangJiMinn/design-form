@@ -25,7 +25,6 @@ const Capture = (props : Props ) => {
     if (materialsLength > 4) {
       const newHeight = 45 - (materialsLength - 4) * 5;
       setImageHeight(`${Math.max(newHeight, 20)}%`);
-      setImageHeight('45%');
     }
   }, [formData.materials]);
 
@@ -108,9 +107,18 @@ const Capture = (props : Props ) => {
             borderBottom: '1px solid black',
             height: '650px',
             lineHeight: '100px',
-            textAlign: 'center' }}
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column' }}
         >
-          <div style={{ height : imageHeight, width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '1rem' }}>
+          <div
+            style={{ maxHeight: imageHeight,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: '1rem' }}
+          >
             {formData.materialImage && (
               <img
                 src={formData.materialImage}
@@ -119,7 +127,7 @@ const Capture = (props : Props ) => {
               />
             )}
           </div>
-          <div style={{ height : '65%', width: '100%' }}>
+          <div style={{ flexGrow: 1, width: '100%' }}>
             {formData.materials && formData.materials.map((material: any, index: number) => (
               <Table
                 key={index}
